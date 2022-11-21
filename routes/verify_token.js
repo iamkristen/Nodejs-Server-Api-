@@ -1,31 +1,42 @@
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req,res,next)=>{
-    const authHeaders = req.headers.token;
+    const authHeaders = req.headers;
+
 
 if(authHeaders){
-    var token = authHeaders.split(" ")[1];
-    // console.log(token)
+
+    var token = authHeaders.authorization.split(" ")[1];
+// console.log(token)
 
     jwt.verify(token,process.env.JWT_SEC,(err,user)=>{
-    if(err) res.status(403).json("Token is not valid!");
+    if(err) res.status(403).send("Token is not valid!");
+    // console.log("user here")
     req.user = user;
-    next();
+    if((req.user.id === req.params.id )|| req.user.isAdmin){
+        next();
+    }else{
+        res?.status(403).send("You are not allowed in this area.")
+    }
+    // next();
 })
 }else{
-    return res.status(401).json('You are not authenticated');
+    return res.status(401).send('You are not authenticated');
 }
 };
 
-const verifyTokenAndAuthorization = (req,res,next)=>{
-    verifyToken((req,res,()=>{
-        // console.log(req.user.id);
-        // if(req.user.id === req.params.id || req.user.isAdmin){
-            next();
-        // }else{
-        //     res.status(403).json("you are not allowed in this area.")
-        // }
-    }),)
-}
+// const verifyTokenAndAuthorization = (req,res,next)=>{
+//     req.headers.
+//     verifyToken((req,res, ()=>{
+//         console.log(req.user.id);
+//         if(req.user.id === req.params.id || req.user.isAdmin){
+//             next();
+//         }else{
+//             res?.status(403).json("You are not allowed in this area.")
+//         }
+//     }
+//     ),
+//     )
+// }
 
-module.exports = {verifyToken,verifyTokenAndAuthorization}
+module.exports = { verifyToken}
