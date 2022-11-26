@@ -48,7 +48,7 @@ router.post('/login',(req,res)=>{
         const login = User.findOne({
             username: req.body.username,
         }).then((user)=>{
-            console.warn(user);
+            
             if(!user){
                 res.status(404).json("user not found");
             }else{
