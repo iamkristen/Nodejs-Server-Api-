@@ -60,4 +60,24 @@ router.post("/products/update/:id",verifyToken,async (req,res)=> {
     }
 })
 
+router.delete("/products/delete/:id",verifyToken,async (req,res)=>{
+    
+    try {
+        if(req.params.id){
+            await Product.findById(req.params.id).then((yeah)=>{
+                if(yeah){
+                    Product.findByIdAndDelete(req.params.id);
+                    res.status(200).send("Product deleted successfully.");
+                }else{
+                    res.status(404).send("Product not found.");
+                }
+            })
+        }
+        
+    } catch (error) {
+        res.status(500).send(error);
+        
+    }
+})
+
 module.exports = router;
